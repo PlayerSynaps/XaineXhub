@@ -1,0 +1,249 @@
+getgenv().autoRebirth = false;
+getgenv().autoTHROW = false;
+getgenv().autoBuy = false;
+getgenv().autoBuy2 = false;
+getgenv().autoBuy3 = false;
+getgenv().autoBuy4 = false;
+getgenv().buyEgg = false;
+getgenv().thisvalue = 'my name';
+
+
+local remotePath = game:GetService("ReplicatedStorage").Remotes;
+local player = game:GetService("CoreGui")
+
+
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/Rain-Design/Unnamed/main/Library.lua'))()
+
+
+Library.Theme = "Dark"
+local Flags = Library.Flags
+
+local Window = Library:Window({
+   Text = "XaineX_HUB"
+})
+
+local Tab = Window:Tab({
+   Text = "AutoFarm"
+})
+
+local Tab5 = Window:Tab({
+    Text = "AutoTHROW!"
+ })
+
+local Tab2 = Window:Tab({
+   Text = "AutoEgg"
+})
+
+local Tab3 = Window:Tab({
+   Text = "Player"
+})
+
+local Tab4 = Window:Tab({
+   Text = "Teleport"
+})
+
+local Section = Tab:Section({
+   Text = "AutoStrength"
+})
+
+local Section5 = Tab5:Section({
+    Text = "AutoTHROW"
+ })
+
+local Section2 = Tab:Section({
+   Text = "AutoRebirth"
+})
+
+local Section3 = Tab3:Section({
+   Text = "WalkSpeed"
+})
+
+local Section4 = Tab3:Section({
+    Text = "JumpPower"
+})
+
+local Section4 = Tab4:Section({
+   Text = "Buttons2"
+})
+
+Section:Toggle({
+   Text = "Strength +1",
+   Callback = function(bool)
+    getgenv().autoBuy = bool
+    print('Auto Buy is 1', bool);
+    if bool then 
+    buyStrength();
+   end
+end
+})
+
+Section:Toggle({
+    Text = "Strength +100",
+    Callback = function(bool)
+     getgenv().autoBuy2 = bool
+     print('Auto Buy is 100', bool);
+     if bool then 
+     buyPower();
+    end
+ end
+ })
+
+ Section:Toggle({
+    Text = "Strength +1000",
+    Callback = function(bool)
+     getgenv().autoBuy3 = bool
+     print('Auto Buy is 1000', bool);
+     if bool then 
+     buySPower();
+    end
+ end
+ })
+
+ Section:Toggle({
+    Text = "Strength +100.000",
+    Callback = function(bool)
+     getgenv().autoBuy4 = bool
+     print('Auto Buy is 100.000', bool);
+     if bool then 
+     buyPSower();
+    end
+ end
+ })
+
+Section5:Toggle({
+    Text = "THROW!",
+    Callback = function(bool)
+     getgenv().autoTHROW = bool
+     print('Auto Buy is', bool);
+     if bool then 
+     autoThrow();
+    end
+ end
+ })
+
+Section4:Keybind({
+   Text = "Press",
+   Default = Enum.KeyCode.Z,
+   Callback = function()
+   end
+})
+
+Section4:Slider({
+   Text = "Speed",
+   Default = 25,
+   Minimum = 0,
+   Maximum = 200
+})
+
+Section2:Toggle({
+   Text = "Rebirth",
+   Callback = function(bool)
+       getgenv().autoRebirth = bool
+       print('AutoRebirt is', bool)
+       if bool then
+        autoRebirth();
+       end
+   end
+})
+
+
+Tab:Select()
+
+--Functoion
+--  --
+--  -- 
+--  --
+ --------
+
+
+--AutoRebirth
+function autoRebirth()
+spawn(function()
+while getgenv().autoRebirth == true do
+    remotePath.RebirthRequest:InvokeServer()
+    wait()
+end
+end)
+end
+
+--AutoStreng
+--1 power
+function buyStrength()
+spawn(function()
+    while getgenv().autoBuy == true do
+        local args = {[1] = 1}
+        remotePath.BuyStrength:FireServer(unpack(args))
+        wait(0.5)
+    end
+    end)
+    end
+--100 power
+function buyPower()
+spawn(function()
+    while getgenv().autoBuy2 == true do
+        local args = {[1] = 2}
+        remotePath.BuyStrength:FireServer(unpack(args))
+        wait(0.5)
+    end
+    end)
+end
+--1000 power
+function buySPower()
+spawn(function ()
+    while getgenv().autoBuy3 == true do
+        local args = {[1] = 3}
+        remotePath.BuyStrength:FireServer(unpack(args))
+        wait(0.5)
+    end 
+    end)
+end
+--100.000 power
+function buyPSower()
+    spawn(function ()
+        while getgenv().autoBuy4 == true do
+            local args = {[1] = 4}
+            remotePath.BuyStrength:FireServer(unpack(args))
+            wait(0.25)
+        end 
+        end)
+    end
+--AutoEgg
+function buyEgg(eggType, eggLimit )
+spawn(function ()
+    local iteration = 0;
+    while wait() do
+        if not buyEgg or iteration == eggLimit then break end;
+        local args = {[1] = "Emerald Crate"}   
+        remotePath.OpenCrate:InvokeServer(eggType)
+        iteration = iteration +1
+    end
+end)
+end
+--PlayerTP
+function getCurrentPlayerPOS()
+    local plyr = game.Players.LocalPlayer;
+    if plyr.Character then
+        return plyr.Character.HumanoidRootPart,Position;
+    end
+    return false;
+end
+--THROW
+function autoThrow()
+    spawn(function ()
+        while getgenv().autoTHROW == true do
+            remotePath.AttemptThrow:InvokeServer()
+            wait()
+        end
+    end)
+end
+
+
+
+--DropDOWN
+local drop = Section3:Dropdown({
+    Text = "Choose",
+    List = {"Idk", "Test"},
+    Callback = function(v)
+        warn(v)
+    end
+ })
